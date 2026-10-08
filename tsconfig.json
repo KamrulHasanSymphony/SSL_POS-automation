@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["pages/*"],
+      "@components/*": ["components/*"],
+      "@fixtures/*": ["fixtures/*"],
+      "@utils/*": ["utils/*"],
+      "@config/*": ["config/*"],
+      "@test-data/*": ["test-data/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "reports",
+    "screenshots",
+    "videos",
+    "traces",
+    "storage",
+    "playwright-report",
+    "test-results",
+    "allure-results",
+    "allure-report"
+  ]
+}

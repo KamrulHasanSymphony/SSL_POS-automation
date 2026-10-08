@@ -1,0 +1,41 @@
+{
+  "name": "shampan-pos-automation",
+  "version": "1.0.0",
+  "description": "Independent Playwright + TypeScript automation project for Shampan POS/DMS (ShampanPOSUI). Does not modify or depend on the application source code.",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:smoke": "playwright test --grep @smoke --grep-invert \"@known-defect|@framework-only\"",
+    "test:sanity": "playwright test --grep @sanity --grep-invert \"@known-defect|@framework-only\"",
+    "test:regression": "playwright test --grep @regression --grep-invert \"@known-defect|@framework-only\"",
+    "test:negative": "playwright test --grep @negative --grep-invert \"@known-defect|@framework-only\"",
+    "test:security": "playwright test tests/ui/security --grep-invert @framework-only",
+    "test:known-defects": "playwright test --grep @known-defect",
+    "test:p0": "playwright test --grep @p0 --grep-invert @framework-only",
+    "test:p1": "playwright test --grep @p1 --grep-invert @framework-only",
+    "test:p2": "playwright test --grep @p2 --grep-invert @framework-only",
+    "test:p3": "playwright test --grep @p3 --grep-invert @framework-only",
+    "test:framework-only": "playwright test --grep @framework-only",
+    "test:framework": "playwright test --project=framework",
+    "test:unauthenticated": "playwright test --project=unauthenticated",
+    "test:unauthenticated-serial": "playwright test --project=unauthenticated --workers=1",
+    "test:setup": "playwright test --project=setup",
+    "test:authenticated": "playwright test --project=authenticated",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report reports/html",
+    "report:allure:generate": "allure generate allure-results --clean -o allure-report",
+    "report:allure:open": "allure open allure-report",
+    "report:allure:serve": "allure serve allure-results",
+    "typecheck": "tsc --noEmit",
+    "list": "playwright test --list"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^20.14.0",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.10.2",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.0"
+  }
+}

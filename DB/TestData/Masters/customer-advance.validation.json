@@ -1,0 +1,97 @@
+{
+  "module": "CustomerAdvance",
+  "form": "Create",
+  "cases": [
+    {
+      "id": "CADV-AMT-001",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "zero",
+      "input": 0,
+      "expectedResult": "invalid",
+      "expectedMessageKey": "customerAdvance.advanceAmountInvalid",
+      "priority": "P0",
+      "tags": ["negative", "boundary"],
+      "notes": "VM [Range(1, double.MaxValue)] -> 0 is below the lower bound."
+    },
+    {
+      "id": "CADV-AMT-002",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "negative",
+      "input": -100,
+      "expectedResult": "invalid",
+      "expectedMessageKey": "customerAdvance.advanceAmountInvalid",
+      "priority": "P0",
+      "tags": ["negative", "boundary"]
+    },
+    {
+      "id": "CADV-AMT-003",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "positive",
+      "input": 500,
+      "expectedResult": "valid",
+      "priority": "P0",
+      "tags": ["positive"]
+    },
+    {
+      "id": "CADV-AMT-004",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "below-min",
+      "input": 0.5,
+      "expectedResult": "invalid",
+      "expectedMessageKey": "customerAdvance.advanceAmountInvalid",
+      "priority": "P1",
+      "tags": ["negative", "boundary", "needs-runtime-verification"],
+      "notes": "Range lower bound is 1; 0.5 is below it. Confirm the fractional-below-1 case at runtime."
+    },
+    {
+      "id": "CADV-AMT-005",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "decimal-precision",
+      "input": 1234.56,
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["needs-runtime-verification"],
+      "notes": "Confirm decimal precision accepted/stored."
+    },
+    {
+      "id": "CADV-AMT-006",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "AdvanceAmount",
+      "fieldType": "number",
+      "caseType": "above-max",
+      "input": 999999999,
+      "expectedResult": "valid",
+      "priority": "P3",
+      "tags": ["needs-runtime-verification"],
+      "notes": "Large synthetic value within double range; confirm there is no stricter app/DB cap (do not invent one)."
+    },
+    {
+      "id": "CADV-PAY-001",
+      "module": "CustomerAdvance",
+      "form": "Create",
+      "field": "PaymentEnumTypeId",
+      "fieldType": "combobox",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "priority": "P1",
+      "tags": ["negative", "required", "combobox", "needs-runtime-verification"],
+      "notes": "JS-required only (not a VM [Required]). Confirm whether blank selection blocks save and capture the message. Searchable combobox: never selectOption()."
+    }
+  ]
+}

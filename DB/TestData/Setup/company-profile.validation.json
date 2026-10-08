@@ -1,0 +1,106 @@
+{
+  "module": "CompanyProfile",
+  "form": "Create",
+  "cases": [
+    {
+      "id": "CMP-NAME-001",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "CompanyName",
+      "fieldType": "text",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "expectedMessageKey": "companyProfile.companyNameRequired",
+      "priority": "P0",
+      "tags": ["negative", "required"]
+    },
+    {
+      "id": "CMP-NAME-002",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "CompanyName",
+      "fieldType": "text",
+      "caseType": "whitespace",
+      "input": "   ",
+      "expectedResult": "invalid",
+      "expectedMessageKey": "companyProfile.companyNameRequired",
+      "priority": "P1",
+      "tags": ["negative", "needs-runtime-verification"]
+    },
+    {
+      "id": "CMP-NAME-003",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "CompanyName",
+      "fieldType": "text",
+      "caseType": "unicode-bangla",
+      "input": "কোম্পানি লিমিটেড",
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["needs-runtime-verification", "unicode"]
+    },
+    {
+      "id": "CMP-EMAIL-001",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "Email",
+      "fieldType": "text",
+      "caseType": "invalid-format",
+      "input": "bademail.com",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "needs-runtime-verification"],
+      "notes": "Email is [Required] on CompanyProfileVM but no format message is centralized. Confirm format rule + message at runtime; do not invent."
+    },
+    {
+      "id": "CMP-TEL-001",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "invalid-format",
+      "input": "abc-123",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "needs-runtime-verification"],
+      "notes": "Telephone format rule not confirmed; capture behaviour + message at runtime."
+    },
+    {
+      "id": "CMP-TEL-002",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "valid-format",
+      "input": { "generator": "randomData.phone11Digit" },
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["positive", "needs-runtime-verification"]
+    },
+    {
+      "id": "CMP-FY-001",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "FYearStart",
+      "fieldType": "date",
+      "caseType": "dependent-field",
+      "input": "2026-12-31",
+      "expectedResult": "invalid",
+      "priority": "P1",
+      "tags": ["negative", "dependent-field", "business-rule", "needs-runtime-verification"],
+      "notes": "FYearStart after FYearEnd (paired with FYearEnd=2026-01-01) should be rejected as a date-ordering business rule. Confirm enforcement + message at runtime; plain text inputs on this form (yyyy-MM-dd)."
+    },
+    {
+      "id": "CMP-FY-002",
+      "module": "CompanyProfile",
+      "form": "Create",
+      "field": "FYearEnd",
+      "fieldType": "date",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "required", "needs-runtime-verification"],
+      "notes": "FYearEnd is [Required]; message not centralized — capture at runtime."
+    }
+  ]
+}

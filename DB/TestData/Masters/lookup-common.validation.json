@@ -1,0 +1,106 @@
+{
+  "module": "FlatLookup",
+  "form": "Create/Edit",
+  "cases": [
+    {
+      "id": "LKP-NAME-001",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "priority": "P1",
+      "tags": ["negative", "required", "shared", "per-module-message"],
+      "notes": "Shared across the Name-based flat lookups: ProductGroup/CustomerGroup/SupplierGroup/MasterItemGroup/MasterSupplierGroup/UOM/BusinessType/PaymentType. Required MESSAGE differs per module, so each spec supplies its own expectedMessageKey: productGroup.nameRequired, customerGroup.nameRequired, supplierGroup.nameRequired, masterItemGroup.nameRequired, masterSupplierGroup.nameRequired, uom.nameRequired, businessType.nameRequired, paymentType.nameRequired. OverHead differs (field 'OverHead', overHead.overHeadRequired) — not covered by this shared file."
+    },
+    {
+      "id": "LKP-NAME-002",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "whitespace",
+      "input": "   ",
+      "expectedResult": "invalid",
+      "priority": "P1",
+      "tags": ["negative", "shared", "needs-runtime-verification"],
+      "notes": "Whitespace-only expected to count as empty; confirm trim behaviour per module."
+    },
+    {
+      "id": "LKP-NAME-003",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "special-character",
+      "input": "Group <A&B> \"/'",
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["shared", "needs-runtime-verification"],
+      "notes": "Confirm special characters accepted and stored literally."
+    },
+    {
+      "id": "LKP-NAME-004",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "unicode-bangla",
+      "input": "শ্রেণি পরীক্ষা",
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["shared", "unicode", "needs-runtime-verification"]
+    },
+    {
+      "id": "LKP-NAME-005",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "leading-whitespace",
+      "input": "   Leading",
+      "expectedResult": "valid",
+      "priority": "P3",
+      "tags": ["shared", "needs-runtime-verification"]
+    },
+    {
+      "id": "LKP-NAME-006",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "max-length",
+      "expectedResult": "valid",
+      "priority": "P3",
+      "tags": ["shared", "needs-runtime-verification"],
+      "notes": "Per-module max length not proven from source; determine at runtime before asserting. Do not invent."
+    },
+    {
+      "id": "LKP-NAME-007",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "valid-format",
+      "input": { "generator": "randomData.name", "arg": "Lookup" },
+      "expectedResult": "valid",
+      "priority": "P1",
+      "tags": ["positive", "shared"]
+    },
+    {
+      "id": "LKP-NAME-008",
+      "module": "FlatLookup",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "duplicate",
+      "input": { "generator": "uniqueCode", "arg": "LOOKUP" },
+      "expectedResult": "invalid",
+      "expectedMessageKey": "api.duplicateDataExists",
+      "priority": "P2",
+      "tags": ["negative", "duplicate", "shared", "needs-api"],
+      "notes": "Duplicate-name rejection ('Data Already Exist!'). Requires a pre-existing record; do NOT run duplicate setup this phase."
+    }
+  ]
+}

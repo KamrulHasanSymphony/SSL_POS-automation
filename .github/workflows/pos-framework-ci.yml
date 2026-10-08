@@ -1,0 +1,113 @@
+# Shampan POS — Framework-Only CI
+#
+# Validates ONLY the Playwright automation framework (TypeScript + the
+# @framework-only project). It requires NO application login, NO API
+# connectivity, and NO database — zero secrets. It must stay green independent
+# of the auth / API / QA-DB blockers.
+#
+# REPO ASSUMPTION: this file lives at the ROOT of the dedicated
+# `Shampan-POS-Automation` repository (i.e. the former `SSL_POS/automation`
+# folder is the repo root, so package.json is at the working directory). If you
+# instead commit the automation as a SUBFOLDER of another repo, add:
+#   defaults:
+#     run:
+#       working-directory: automation
+# to the job (and adjust artifact paths accordingly).
+
+name: POS Framework CI
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least privilege: the job only reads the checked-out code.
+permissions:
+  contents: read
+
+concurrency:
+  group: pos-framework-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  framework:
+    name: TypeScript + Framework Tests (no auth / API / DB)
+    # Windows self-hosted runner. The runner must carry BOTH labels below
+    # (adjust to your actual runner labels if different).
+    runs-on: [self-hosted, windows]
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      HEADLESS: "true"
+      # NOTE: no BASE_URL / credentials / API / DB env is set or needed here.
+
+    steps:
+      - name: Checkout automation repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies (clean, from lockfile)
+        run: npm ci
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      # The framework scaffold instantiates Page Objects (uses the Chromium
+      # browser), so Chromium must be present. No OS deps step: --with-deps is
+      # Linux-only; this is a Windows runner.
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Verify framework suite discovers tests (fail on zero)
+        shell: pwsh
+        run: |
+          $out = npx playwright test --project=framework --list 2>&1 | Out-String
+          Write-Host $out
+          $m = [regex]::Match($out, 'Total:\s*(\d+)\s+test')
+          if (-not $m.Success) { Write-Error "Could not parse Playwright discovery output."; exit 1 }
+          $count = [int]$m.Groups[1].Value
+          if ($count -lt 1) { Write-Error "Framework suite discovered 0 tests — failing."; exit 1 }
+          Write-Host "Framework tests discovered: $count"
+
+      - name: Run framework-only tests
+        # = playwright test --project=framework (defined in package.json).
+        # Non-zero exit (test failure) fails the job; failures are never bypassed.
+        run: npm run test:framework
+
+      # Artifacts: only non-sensitive outputs. .env and storage/*.json (auth
+      # session state) are NEVER uploaded. if-no-files-found: ignore so a
+      # missing dir does not fail the job.
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: reports/html
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload test-results (traces / screenshots / videos)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+          if-no-files-found: ignore
+          retention-days: 7

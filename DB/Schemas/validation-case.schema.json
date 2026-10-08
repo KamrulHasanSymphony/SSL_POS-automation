@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "pos-automation/validation-dataset",
+  "title": "POS Automation Validation Dataset",
+  "description": "Reference schema for automation/DB/TestData/**/*.validation.json. The authoritative contract is the TypeScript in automation/utils/validation-dataset.ts; this JSON Schema mirrors it for documentation/editor tooling and is NOT loaded at runtime (the loader uses the lightweight TS validator instead, to avoid adding a schema dependency).",
+  "type": "object",
+  "required": ["module", "form", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "module": { "type": "string", "minLength": 1 },
+    "form": { "type": "string", "minLength": 1 },
+    "cases": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/fieldValidationCase" }
+    }
+  },
+  "definitions": {
+    "validationCaseType": {
+      "enum": [
+        "required", "empty", "whitespace", "min-length", "max-length",
+        "below-min", "above-max", "valid-format", "invalid-format", "zero",
+        "negative", "positive", "boundary", "decimal-precision",
+        "special-character", "unicode-bangla", "duplicate",
+        "leading-whitespace", "trailing-whitespace", "conditional-required",
+        "dependent-field", "business-rule"
+      ]
+    },
+    "inputGeneratorToken": {
+      "type": "object",
+      "required": ["generator"],
+      "additionalProperties": false,
+      "properties": {
+        "generator": {
+          "enum": [
+            "uniqueCode", "randomData.code", "randomData.name",
+            "randomData.email", "randomData.phone11Digit", "randomData.int"
+          ]
+        },
+        "arg": { "type": "string" },
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      }
+    },
+    "fieldValidationCase": {
+      "type": "object",
+      "required": ["id", "module", "form", "field", "fieldType", "caseType", "expectedResult"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "module": { "type": "string", "minLength": 1 },
+        "form": { "type": "string", "minLength": 1 },
+        "field": { "type": "string", "minLength": 1 },
+        "fieldType": { "type": "string", "minLength": 1 },
+        "caseType": { "$ref": "#/definitions/validationCaseType" },
+        "input": {
+          "description": "Static literal, or an inputGeneratorToken, or omitted (for empty/required).",
+          "anyOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "boolean" },
+            { "$ref": "#/definitions/inputGeneratorToken" }
+          ]
+        },
+        "expectedResult": { "enum": ["valid", "invalid"] },
+        "expectedMessageKey": {
+          "type": "string",
+          "description": "Dotted key into utils/constants.ts message groups, e.g. 'customer.telephoneRequired'. Resolved at runtime; never duplicate the message text here."
+        },
+        "priority": { "enum": ["P0", "P1", "P2", "P3"] },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "module": "BankInformation",
+  "form": "Create/Edit",
+  "cases": [
+    {
+      "id": "BNK-NAME-001",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "expectedMessageKey": "bankInformation.nameRequired",
+      "priority": "P0",
+      "tags": ["negative", "required"]
+    },
+    {
+      "id": "BNK-NAME-002",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "whitespace",
+      "input": "   ",
+      "expectedResult": "invalid",
+      "expectedMessageKey": "bankInformation.nameRequired",
+      "priority": "P1",
+      "tags": ["negative", "needs-runtime-verification"]
+    },
+    {
+      "id": "BNK-NAME-003",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "Name",
+      "fieldType": "text",
+      "caseType": "unicode-bangla",
+      "input": "অগ্রণী ব্যাংক",
+      "expectedResult": "valid",
+      "priority": "P2",
+      "tags": ["needs-runtime-verification", "unicode"]
+    },
+    {
+      "id": "BNK-TEL-001",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "required",
+      "expectedResult": "invalid",
+      "expectedMessageKey": "bankInformation.telephoneRequired",
+      "priority": "P0",
+      "tags": ["negative", "required"]
+    },
+    {
+      "id": "BNK-TEL-002",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "valid-format",
+      "input": { "generator": "randomData.phone11Digit" },
+      "expectedResult": "valid",
+      "priority": "P1",
+      "tags": ["positive"]
+    },
+    {
+      "id": "BNK-TEL-003",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "below-min",
+      "input": "0171",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "needs-runtime-verification"],
+      "notes": "No telephone regex confirmed on BankInformationVM; confirm short-number handling + message at runtime."
+    },
+    {
+      "id": "BNK-TEL-004",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "above-max",
+      "input": "0171234567890123456",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "needs-runtime-verification"]
+    },
+    {
+      "id": "BNK-TEL-005",
+      "module": "BankInformation",
+      "form": "Create/Edit",
+      "field": "TelephoneNo",
+      "fieldType": "text",
+      "caseType": "invalid-format",
+      "input": "phone-abc",
+      "expectedResult": "invalid",
+      "priority": "P2",
+      "tags": ["negative", "needs-runtime-verification"],
+      "notes": "Alphabetic/mixed telephone input; confirm rejection."
+    }
+  ]
+}
