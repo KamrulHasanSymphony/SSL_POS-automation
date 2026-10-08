@@ -67,7 +67,7 @@ jobs:
         run: npx playwright install chromium
 
       - name: Verify framework suite discovers tests (fail on zero)
-        shell: pwsh
+        shell: powershell
         run: |
           $out = npx playwright test --project=framework --list 2>&1 | Out-String
           Write-Host $out
