@@ -2,7 +2,7 @@ node_modules/
 .env
 
 # Playwright output
-reports/
+/reports/
 screenshots/
 videos/
 traces/
@@ -31,4 +31,3 @@ Thumbs.db
 # Sensitive security reports
 VAPT-Final-Report*
 VAPT-Management-Summary*
-
